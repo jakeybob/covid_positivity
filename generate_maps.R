@@ -77,6 +77,8 @@ p <- df %>%
   transition_states(date) +
   ease_aes("linear")
 
-animate(p, width = 1080, height = 1080, type = "cairo", res = 300, fps = 30, duration = 10)
-anim_save("pics/anim_second2.gif")
-anim_save("pics/anim_second2.mp4")
+animate(p, width = 1080, height = 1080, type = "cairo", res = 300, fps = 30, duration = 11.5, 
+        start_pause = 15,
+        end_pause = 30)
+anim_save("pics/anim_second.gif")
+anim_save("pics/anim_second.mp4")
