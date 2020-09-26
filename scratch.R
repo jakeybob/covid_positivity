@@ -1,5 +1,5 @@
 
-use_bam <- TRUE # use mgcv::bam rather than mgcv::gam for binomial fitting (faster)
+use_bam <- F # use mgcv::bam rather than mgcv::gam for binomial fitting (faster)
 source("get_data.R")
 
 library(tidyverse)
