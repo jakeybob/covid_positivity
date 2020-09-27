@@ -44,6 +44,7 @@ scot_map_ca <- st_read("data/pub_las") %>%
 box <- st_bbox(scot_map_ca)
 box_expand <- ((box$ymax - box$ymin) - (box$xmax - box$xmin))/2
 
+#### ANIMATION ####
 # example frame
 read_rds("data/df.rds") %>% 
   filter(date <= dmy("21/04/2020")) %>%
@@ -55,14 +56,14 @@ read_rds("data/df.rds") %>%
   labs(fill = "", title = title_text,
        subtitle = "21 / 04 / 2020") +
   coord_sf(xlim = c(box$xmin - box_expand, box$xmax + box_expand), expand = F) 
-ggsave("example_frame.png", dpi = 360, width = 3, height = 3, units = "in")
+# ggsave("example_frame.png", dpi = 360, width = 3, height = 3, units = "in")
 
 
 df <- read_rds("data/df.rds") # all data
-# df <- read_rds("data/df.rds") %>% filter(date <= dmy("01/06/2020")) # first wave
+df <- read_rds("data/df.rds") %>% filter(date <= dmy("01/06/2020")) # first wave
 df <- read_rds("data/df.rds") %>% filter(date >= dmy("01/08/2020")) # second wave
 
-duration_days <- min(df$date) %--% max(df$date) / days(1)
+duration_days <- min(df$date) %--% max(df$date) / days(1) # days represented in animation
 min_date <- df$date %>% min()
 
 p <- df %>% 
@@ -70,7 +71,7 @@ p <- df %>%
   right_join(scot_map_ca) %>% 
   ggplot() +
   geom_sf(mapping = aes(fill = model_fit, geometry = geometry), colour = rgb(1, 1, 1, .5), size = .15) +
-  scale_fill_viridis_c(option = "plasma", labels = scales::percent_format(accuracy = 1), limits = c(0, .15), oob = scales::squish) +
+  scale_fill_viridis_c(option = "plasma", labels = scales::percent_format(accuracy = 1), limits = c(0, .35), oob = scales::squish) +
   labs(fill = "", title = title_text,
        subtitle = "{format((min_date + days(round(progress*duration_days))), format = \"%d / %m / %Y\")}") +
   coord_sf(xlim = c(box$xmin - box_expand, box$xmax + box_expand), expand = FALSE) +
@@ -80,5 +81,5 @@ p <- df %>%
 animate(p, width = 1080, height = 1080, type = "cairo", res = 300, fps = 30, duration = 11.5, 
         start_pause = 15,
         end_pause = 30)
-anim_save("pics/anim_second.gif")
-anim_save("pics/anim_second.mp4")
+anim_save("pics/first.gif")
+# anim_save("pics/anim_second.mp4")
