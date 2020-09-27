@@ -145,7 +145,7 @@ df %>%
        subtitle = "(first-wave peak highlighted at April 7th 2020)") +
   coord_cartesian(xlim = c(dmy("01/03/2020"), max(df$date))) +
   theme(legend.position = "none")
-ggsave("pics/plot_scot_gradient.png", dpi = 300, width = 220, height = 200, units = "mm")
+ggsave("pics/plot_scot_gradient.png", dpi = 300, width = 200, height = 133, units = "mm")
 
 
 # LAs
