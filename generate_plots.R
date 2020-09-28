@@ -171,7 +171,7 @@ df %>%
        title = "Scotland COVID-19 Test Positivity Gradient",
        subtitle = "(selected local authority areas)") +
   coord_cartesian(xlim = c(dmy("01/03/2020"), max(df$date)), 
-                  ylim = c(-.03, .03), expand = FALSE) +
+                  ylim = c(-.03, .04), expand = FALSE) +
   theme(axis.title.x = element_text(margin = margin(8,0,12,0)))
 ggsave("pics/plot_all_gradient.png", dpi = 300, width = 220, height = 200, units = "mm")
 
@@ -194,6 +194,7 @@ df %>%
   labs(x = "days from first-wave peak", y = "", fill = "", colour = "",
        title = "Scotland COVID-19 Test Positivity Gradient",
        subtitle = "(selected local authority areas, coincident first-wave peaks)") +
-  coord_cartesian(ylim = c(-.03, .03), expand = FALSE) +
-  theme(axis.title.x = element_text(margin = margin(8,0,12,0)))
+  coord_cartesian(ylim = c(-.03, .04), expand = FALSE) +
+  theme(axis.title.x = element_text(margin = margin(8,0,12,0)),
+        axis.text.x = element_text(angle = 0, hjust = .5))
 ggsave("pics/plot_all_gradient_shifted.png", dpi = 300, width = 220, height = 200, units = "mm")
