@@ -92,7 +92,7 @@ df %>%
   coord_cartesian(expand = FALSE) +
   labs(x = "", y = "", fill = "", colour = "",
        title = "Scotland COVID-19 Test Positivity",
-       subtitle = "(first-wave peak highlighted at April 7th 2020)") +
+       subtitle = "(national first-wave peak highlighted at April 7th 2020)") +
   theme(legend.position = "right") +
   theme(axis.text.y = element_text(colour = ifelse(sort(unique(df$ca_name), decreasing = TRUE) == "Scotland", "white", "grey75")) )
 ggsave("pics/plot_tile_alphabetical.png", dpi = 300, width = 320, height = 200, units = "mm")
@@ -116,7 +116,7 @@ df %>%
   coord_cartesian(expand = FALSE) +
   labs(x = "", y = "", fill = "", colour = "",
        title = "Scotland COVID-19 Test Positivity",
-       subtitle = "(first-wave peak highlighted at April 7th 2020)") +
+       subtitle = "(national first-wave peak highlighted at April 7th 2020)") +
   theme(legend.position = "right") +
   theme(axis.text.y = element_text(colour = ifelse(sort(factor(unique(df$ca_name), levels = first_wave_peaks$ca_name), decreasing = F) == "Scotland", "white", "grey75")) )
 ggsave("pics/plot_tile_fwpeakdate.png", dpi = 300, width = 320, height = 200, units = "mm")
@@ -131,19 +131,20 @@ df %>%
   filter(ca_name == "Scotland") %>%
   arrange(ca_name, date) %>% 
   mutate(model_fit_diff = model_fit - lag(model_fit),
-         upper_95_diff = upper_95 - lag(upper_95),
-         lower_95_diff = lower_95 - lag(lower_95)) %>%
+         upper_95_diff = upper_95 - lag(lower_95),
+         lower_95_diff = lower_95 - lag(upper_95)) %>% 
   ggplot(aes(x = date, y = model_fit_diff, colour = ca_name, fill = ca_name)) +
   geom_line() +
   geom_line(aes(colour = ca_name), size = 1.1) +
-  geom_ribbon(aes(ymin = lower_95_diff, ymax = upper_95_diff, fill = ca_name), alpha = .2, colour = NA) +
+  geom_ribbon(aes(ymin = lower_95_diff, ymax = upper_95_diff, fill = ca_name), alpha = .1, colour = NA) +
   scale_colour_viridis_d(option = "plasma", begin = 1) +
   geom_vline(xintercept = scot_first_wave_peak, colour = "grey90") +
   scale_x_date(date_breaks = "months", date_labels = "%b %Y", expand = c(0,0)) +
   labs(x = "", y = "", fill = "", colour = "",
        title = "Scotland COVID-19 Test Positivity Gradient",
        subtitle = "(first-wave peak highlighted at April 7th 2020)") +
-  coord_cartesian(xlim = c(dmy("01/03/2020"), max(df$date))) +
+  coord_cartesian(xlim = c(dmy("01/03/2020"), max(df$date)),
+                  ylim = c(-.015, .015), expand = T) +
   theme(legend.position = "none")
 ggsave("pics/plot_scot_gradient.png", dpi = 300, width = 200, height = 133, units = "mm")
 
@@ -157,41 +158,42 @@ df %>%
   group_by(ca_name) %>% 
   arrange(ca_name, date) %>% 
   mutate(model_fit_diff = model_fit - lag(model_fit),
-         upper_95_diff = upper_95 - lag(upper_95),
-         lower_95_diff = lower_95 - lag(lower_95)) %>%
+         upper_95_diff = upper_95 - lag(lower_95),
+         lower_95_diff = lower_95 - lag(upper_95)) %>% 
   ggplot(aes(x = date, y = model_fit_diff, colour = ca_name, fill = ca_name)) +
   geom_line() +
-  geom_ribbon(aes(ymin = lower_95_diff, ymax = upper_95_diff, fill = ca_name), alpha = .1, colour = NA) +
+  geom_ribbon(aes(ymin = lower_95_diff, ymax = upper_95_diff, fill = ca_name), alpha = .01, colour = NA) +
   scale_colour_viridis_d(option = "plasma") +
   scale_fill_viridis_d(option = "plasma") +
   geom_vline(xintercept = scot_first_wave_peak, colour = "grey90") +
   scale_x_date(date_breaks = "months", date_labels = "%b %Y") +
-  labs(x = "", y = "", fill = "", colour = "",
+  labs(x = " ", y = "", fill = "", colour = "",
        title = "Scotland COVID-19 Test Positivity Gradient",
        subtitle = "(selected local authority areas)") +
-  coord_cartesian(xlim = c(dmy("01/03/2020"), max(df$date)), expand = FALSE)
+  coord_cartesian(xlim = c(dmy("01/03/2020"), max(df$date)), 
+                  ylim = c(-.03, .03), expand = FALSE) +
+  theme(axis.title.x = element_text(margin = margin(8,0,12,0)))
 ggsave("pics/plot_all_gradient.png", dpi = 300, width = 220, height = 200, units = "mm")
 
 # LAs, gradients shifted to match first wave peaks
 df %>% 
   left_join(first_wave_peaks) %>% 
-  mutate(date = date + days(peak_diff)) %>%
+  mutate(days_from_peak = max_date %--% date / days(1)) %>% 
   filter(ca_name != "Scotland") %>%
   filter(!(ca_name %in% c("Shetland Islands", "Na h-Eileanan Sia", "Orkney Islands"))) %>%
   group_by(ca_name) %>% 
   arrange(ca_name, date) %>% 
   mutate(model_fit_diff = model_fit - lag(model_fit),
-         upper_95_diff = upper_95 - lag(upper_95),
-         lower_95_diff = lower_95 - lag(lower_95)) %>%
-  ggplot(aes(x = date, y = model_fit_diff, colour = ca_name, fill = ca_name)) +
+         upper_95_diff = upper_95 - lag(lower_95),
+         lower_95_diff = lower_95 - lag(upper_95)) %>% 
+  ggplot(aes(x = days_from_peak, y = model_fit_diff, colour = ca_name, fill = ca_name)) +
   geom_line() +
-  geom_ribbon(aes(ymin = lower_95_diff, ymax = upper_95_diff, fill = ca_name), alpha = .1, colour = NA) +
+  geom_ribbon(aes(ymin = lower_95_diff, ymax = upper_95_diff, fill = ca_name), alpha = .01, colour = NA) +
   scale_colour_viridis_d(option = "plasma") +
   scale_fill_viridis_d(option = "plasma") +
-  geom_vline(xintercept = scot_first_wave_peak, colour = "grey90") +
-  scale_x_date(date_breaks = "months", date_labels = "%b %Y") +
-  labs(x = "", y = "", fill = "", colour = "",
+  labs(x = "days from first-wave peak", y = "", fill = "", colour = "",
        title = "Scotland COVID-19 Test Positivity Gradient",
        subtitle = "(selected local authority areas, coincident first-wave peaks)") +
-  coord_cartesian(xlim = c(dmy("01/03/2020"), max(df$date)), expand = FALSE)
+  coord_cartesian(ylim = c(-.03, .03), expand = FALSE) +
+  theme(axis.title.x = element_text(margin = margin(8,0,12,0)))
 ggsave("pics/plot_all_gradient_shifted.png", dpi = 300, width = 220, height = 200, units = "mm")
