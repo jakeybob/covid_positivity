@@ -63,7 +63,7 @@ df %>%
   scale_colour_viridis_d(option = "plasma") +
   scale_fill_viridis_d(option = "plasma") +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  scale_x_date(date_breaks = "months", date_labels = "%b %Y") +
+  scale_x_date(date_breaks = "months", date_labels = "%b %Y", expand=expansion(add = c(0, 0))) +
   labs(x = "", y = "", fill = "", colour = "",
        title = "Scotland COVID-19 Test Positivity",
        subtitle = "(local authority areas)") +
