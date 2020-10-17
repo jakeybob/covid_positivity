@@ -80,5 +80,5 @@ p <- df %>%
 
 animate(p, width = 1080, height = 1080, type = "cairo", res = 300, fps = 30, duration = 11.5, 
         start_pause = 15,
-        end_pause = 30)
+        end_pause = 60)
 anim_save("pics/second.gif")
