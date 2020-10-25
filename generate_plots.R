@@ -35,7 +35,7 @@ first_wave_peaks <- read_rds("data/fwp.rds")
 #### PLOTS ####
 # Scotland level smoothed, with points
 df %>%
-  filter(ca_name == "Scotland") %>% 
+  filter(ca_name == "Scotland") %>%
   mutate(tests = daily_positive + daily_negative) %>% 
   ggplot(aes(x = date, y = model_fit)) +
   geom_line(aes(colour = ca_name), size = 1.1) +
@@ -57,6 +57,7 @@ ggsave("pics/plot_scot_smooth.png", dpi = 300, width = 200, height = 133, units 
 df %>%
   filter(ca_name != "Scotland") %>% 
   ggplot(aes(x = date, y = model_fit, group = ca_name, colour = ca_name, fill = ca_name)) +
+  # facet_wrap(~ca_name, scales = "free_y") +
   geom_line() +
   geom_ribbon(aes(ymin = lower_95, ymax = upper_95), alpha = .1, colour = NA) +
   geom_hline(yintercept = .05, colour = "red", alpha = 1) +
@@ -151,8 +152,6 @@ ggsave("pics/plot_scot_gradient.png", dpi = 300, width = 200, height = 133, unit
 
 # LAs
 df %>% 
-  # left_join(first_wave_peaks) %>% 
-  # mutate(date = date + days(peak_diff)) %>%
   filter(ca_name != "Scotland") %>%
   filter(!(ca_name %in% c("Shetland Islands", "Na h-Eileanan Sia", "Orkney Islands"))) %>%
   group_by(ca_name) %>% 
@@ -161,6 +160,7 @@ df %>%
          upper_95_diff = upper_95 - lag(lower_95),
          lower_95_diff = lower_95 - lag(upper_95)) %>% 
   ggplot(aes(x = date, y = model_fit_diff, colour = ca_name, fill = ca_name)) +
+  # facet_wrap(~ca_name, scales = "free_y") +
   geom_line() +
   geom_ribbon(aes(ymin = lower_95_diff, ymax = upper_95_diff, fill = ca_name), alpha = .01, colour = NA) +
   scale_colour_viridis_d(option = "plasma") +
@@ -187,6 +187,7 @@ df %>%
          upper_95_diff = upper_95 - lag(lower_95),
          lower_95_diff = lower_95 - lag(upper_95)) %>% 
   ggplot(aes(x = days_from_peak, y = model_fit_diff, colour = ca_name, fill = ca_name)) +
+  # facet_wrap(~ca_name, scales = "free_y") +
   geom_line() +
   geom_ribbon(aes(ymin = lower_95_diff, ymax = upper_95_diff, fill = ca_name), alpha = .01, colour = NA) +
   scale_colour_viridis_d(option = "plasma") +
