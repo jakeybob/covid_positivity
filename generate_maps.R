@@ -6,10 +6,7 @@ library(lubridate)
 library(sf)
 library(rmapshaper)
 library(gganimate)
-# library(showtext)
-# font_add_google(name = "Lato") # https://fonts.google.com
-# showtext_auto()
-# background_colour <- viridis::plasma(1)
+
 background_colour <- "black"
 title_text <- "COVID-19 Test Positivity"
 
@@ -18,8 +15,8 @@ theme_set(theme_bw() +
               axis.text.x = element_blank(), axis.text.y = element_blank(), 
               axis.ticks = element_blank(),
               panel.grid = element_blank(), panel.border = element_blank()) +
-            theme(panel.background = element_rect(fill = background_colour),
-                  plot.background = element_rect(fill = background_colour),
+            theme(panel.background = element_rect(fill = background_colour, colour = background_colour),
+                  plot.background = element_rect(fill = background_colour, colour = background_colour),
                   legend.background = element_rect(fill = background_colour),
                   plot.title = element_text(face = "bold", size = 16, colour = "grey90", margin=margin(10,0,0,0)),
                   plot.subtitle = element_text(face = "bold", size = 14, colour = "grey90", margin=margin(10,0,0,0)),

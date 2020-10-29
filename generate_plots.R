@@ -11,11 +11,11 @@ background_colour <- viridis::plasma(1)
 
 theme_set(theme_bw() + 
             theme(text = element_text(family = "Lato", colour = "grey90"),
-                  panel.background = element_rect(fill = "black"),
+                  panel.background = element_rect(fill = "black", colour = "black"),
                   panel.border = element_rect(colour = "grey90"),
                   panel.grid.major = element_line(colour = "grey30"),
                   panel.grid.minor = element_blank(),
-                  plot.background = element_rect(fill = "black"),
+                  plot.background = element_rect(fill = "black", colour = "black"),
                   plot.title = element_text(margin = margin(10, 0, 10, 0), size = 20),
                   plot.subtitle = element_text(margin = margin(10, 0, 30, 0), size = 14),
                   axis.text = element_text(face = "bold", size = 10, colour = "grey90"),
