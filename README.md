@@ -52,3 +52,14 @@ Looking at the gradient of the test positivity curve we can see which areas e.g.
 
 ![](pics/plot_all_gradient_shifted.png)
 
+## Test Positivity Phase Space
+Plotting test positivity (from smoothed fit) against its own rate of change.
+
+![](pics/plot_phase_all.png)
+
+![](pics/plot_phase_all_facet.png)
+
+
+
+
+

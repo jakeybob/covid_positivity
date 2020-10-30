@@ -199,3 +199,145 @@ df %>%
   theme(axis.title.x = element_text(margin = margin(8,0,12,0)),
         axis.text.x = element_text(angle = 0, hjust = .5))
 ggsave("pics/plot_all_gradient_shifted.png", dpi = 300, width = 220, height = 200, units = "mm")
+
+
+# Phase space plots
+df %>% 
+  filter(ca_name != "Scotland") %>%
+  arrange(ca_name, date) %>% 
+  mutate(period = if_else(date <= dmy("30/06/2020"), "wave 1", "wave 2")) %>% 
+  mutate(model_fit_diff = model_fit - lag(model_fit),
+         upper_95_diff = upper_95 - lag(lower_95),
+         lower_95_diff = lower_95 - lag(upper_95)) %>% 
+  ggplot(aes(x = model_fit, y = model_fit_diff, colour = ca_name, alpha=date)) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_colour_viridis_d(option = "plasma") +
+  scale_fill_viridis_d(option = "plasma") +
+  geom_hline(yintercept = 0, colour = "grey30") +
+  geom_path(size=1) +
+  guides(linetype = "none", alpha = "none") +
+  theme(legend.position = "right",
+        panel.grid.major = element_line(colour = "grey10"),
+        plot.title =  element_text(size = 24, margin = margin(10, 0, 20, 0)),
+        strip.text = element_text(size = 10),
+        legend.text = element_text(size = 11),
+        axis.text = element_text(size = 12, margin=margin(30, 30, 30, 30)),
+        axis.title = element_text(size = 14),
+        axis.text.x = element_text(angle = 0, hjust = 1)) +
+  labs(x = "positivity", y = "positivity change", fill = "", colour = "", linetype="",
+       title = "Scotland COVID-19 Test Positivity Phase Space") 
+ggsave("pics/plot_phase_all.png", dpi = 300, width = 297, height = 210, units = "mm")
+
+
+# as above but faceted by local authority
+df %>% 
+  filter(ca_name != "Scotland") %>%
+  arrange(ca_name, date) %>% 
+  mutate(period = if_else(date <= dmy("30/06/2020"), "wave 1", "wave 2")) %>% 
+  mutate(model_fit_diff = model_fit - lag(model_fit),
+         upper_95_diff = upper_95 - lag(lower_95),
+         lower_95_diff = lower_95 - lag(upper_95)) %>% 
+  ggplot(aes(x = model_fit, y = model_fit_diff, colour = ca_name, alpha = date, group = ca_name)) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_colour_viridis_d(option = "plasma") +
+  scale_fill_viridis_d(option = "plasma") +
+  geom_hline(yintercept = 0, colour = "grey30") +
+  geom_path(size=1) +
+  facet_wrap(c("ca_name"), ncol = 8) +
+  guides(linetype = "none", alpha = "none") +
+  theme(legend.position = "none",
+        panel.grid.major = element_line(colour = "grey10"),
+        plot.title =  element_text(size = 24, margin = margin(10, 0, 20, 0)),
+        strip.text = element_text(size = 9),
+        legend.text = element_text(size = 11),
+        axis.text = element_text(size = 10, margin=margin(30, 30, 30, 30)),
+        axis.title = element_text(size = 14),
+        axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "positivity", y = "positivity change", fill = "", colour = "", linetype="",
+       title = "Scotland COVID-19 Test Positivity Phase Space") 
+ggsave("pics/plot_phase_all_facet.png", dpi = 300, width = 297, height = 210, units = "mm")
+
+
+df %>% 
+  filter(ca_name %in% c("Aberdeen City", "Aberdeenshire")) %>% 
+  arrange(ca_name, date) %>% 
+  mutate(period = if_else(date <= dmy("30/06/2020"), "xwave 1", "wave 2")) %>% 
+  mutate(model_fit_diff = model_fit - lag(model_fit),
+         upper_95_diff = upper_95 - lag(lower_95),
+         lower_95_diff = lower_95 - lag(upper_95)) %>% 
+  ggplot(aes(x = model_fit, y = model_fit_diff, colour = ca_name, alpha = date)) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_colour_viridis_d(option = "plasma") +
+  scale_fill_viridis_d(option = "plasma") +
+  geom_hline(yintercept = 0, colour = "grey30") +
+  geom_path(size=1.5) +
+  guides(linetype = "none", alpha = "none") +
+  theme(legend.position = "bottom",
+        panel.grid.major = element_line(colour = "grey10"),
+        plot.title =  element_text(size = 24, margin = margin(10, 0, 20, 0)),
+        strip.text = element_text(size = 10),
+        legend.text = element_text(size = 11),
+        axis.text = element_text(size = 12, margin=margin(30, 30, 30, 30)),
+        axis.title = element_text(size = 14),
+        axis.text.x = element_text(angle = 0, hjust = 1)) +
+  labs(x = "positivity", y = "positivity change", fill = "", colour = "", linetype="",
+       title = "COVID-19 Test Positivity Phase Space") 
+ggsave("pics/plot_phase_selected1.png", dpi = 300, width = 297, height = 210, units = "mm")
+
+df %>% 
+  filter(ca_name %in% c("Inverclyde", "City of Edinburgh", "Scottish Borders", "Stirling")) %>% 
+  arrange(ca_name, date) %>% 
+  mutate(period = if_else(date <= dmy("30/06/2020"), "xwave 1", "wave 2")) %>% 
+  mutate(model_fit_diff = model_fit - lag(model_fit),
+         upper_95_diff = upper_95 - lag(lower_95),
+         lower_95_diff = lower_95 - lag(upper_95)) %>% 
+  ggplot(aes(x = model_fit, y = model_fit_diff, colour = ca_name, alpha = date)) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_colour_viridis_d(option = "plasma") +
+  scale_fill_viridis_d(option = "plasma") +
+  geom_hline(yintercept = 0, colour = "grey30") +
+  geom_path(size=1.5) +
+  guides(linetype = "none", alpha = "none") +
+  theme(legend.position = "right",
+        panel.grid.major = element_line(colour = "grey10"),
+        plot.title =  element_text(size = 24, margin = margin(10, 0, 20, 0)),
+        strip.text = element_text(size = 10),
+        legend.text = element_text(size = 11),
+        axis.text = element_text(size = 12, margin=margin(30, 30, 30, 30)),
+        axis.title = element_text(size = 14),
+        axis.text.x = element_text(angle = 0, hjust = 1)) +
+  labs(x = "positivity", y = "positivity change", fill = "", colour = "", linetype="",
+       title = "COVID-19 Test Positivity Phase Space") 
+ggsave("pics/plot_phase_selected2.png", dpi = 300, width = 297, height = 210, units = "mm")
+
+
+df %>% 
+  filter(ca_name %in% c("East Renfrewshire", "East Lothian", "Perth & Kinross")) %>% 
+  arrange(ca_name, date) %>% 
+  mutate(period = if_else(date <= dmy("30/06/2020"), "xwave 1", "wave 2")) %>% 
+  mutate(model_fit_diff = model_fit - lag(model_fit),
+         upper_95_diff = upper_95 - lag(lower_95),
+         lower_95_diff = lower_95 - lag(upper_95)) %>% 
+  ggplot(aes(x = model_fit, y = model_fit_diff, colour = ca_name, alpha = date)) +
+  scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_colour_viridis_d(option = "plasma") +
+  scale_fill_viridis_d(option = "plasma") +
+  geom_hline(yintercept = 0, colour = "grey30") +
+  geom_path(size=1.5) +
+  guides(linetype = "none", alpha = "none") +
+  theme(legend.position = "right",
+        panel.grid.major = element_line(colour = "grey10"),
+        plot.title =  element_text(size = 24, margin = margin(10, 0, 20, 0)),
+        strip.text = element_text(size = 10),
+        legend.text = element_text(size = 11),
+        axis.text = element_text(size = 12, margin=margin(30, 30, 30, 30)),
+        axis.title = element_text(size = 14),
+        axis.text.x = element_text(angle = 0, hjust = 1)) +
+  labs(x = "positivity", y = "positivity change", fill = "", colour = "", linetype="",
+       title = "COVID-19 Test Positivity Phase Space") 
+ggsave("pics/plot_phase_selected3.png", dpi = 300, width = 297, height = 210, units = "mm")
