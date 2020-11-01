@@ -63,7 +63,7 @@ p <- df_plot %>%
   scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   geom_hline(yintercept = 0, colour = "grey30") +
-  geom_path(aes(alpha = date)) +
+  geom_path(aes(alpha = date), size = 1) +
   guides(linetype = "none", alpha = "none") +
   labs(x = "positivity", y = "positivity change", fill = "", colour = "", fill = "", 
        title = "Scotland COVID-19 Test Positivity Phase Space",
@@ -75,9 +75,10 @@ animate(p, width = 1920, height = 1080, type = "cairo", res = 300, fps = 30, dur
         end_pause = 60)
 anim_save("pics/phase.mp4")
 
-# convert to reasonably sized h265
+# convert to reasonably sized h264
 file.remove("pics/phase_output.mp4")
-ffmpeg_command <- "ffmpeg -i pics/phase.mp4 -c:v libx265 pics/phase_output.mp4"
+# ffmpeg_command <- "ffmpeg -i pics/phase.mp4 -c:v libx265 pics/phase_output.mp4"
+ffmpeg_command <- "ffmpeg -i pics/phase.mp4 -c:v libx264 -pix_fmt yuv420p pics/phase_output.mp4"
 system(ffmpeg_command)
 file.remove("pics/phase.mp4")
 
@@ -89,7 +90,7 @@ pscot1 <- df_plot %>%
   scale_colour_viridis_d(option = "plasma", begin = 1) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   scale_x_date(date_breaks = "months", date_labels = "%b %Y", expand = c(0,0)) +
-  geom_path() +
+  geom_path(size = 1) +
   guides(linetype = "none", alpha = "none", colour = "none", fill = "none") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         legend.position = "none") +
@@ -109,7 +110,7 @@ pscot2 <- df_plot %>%
   scale_colour_viridis_d(option = "plasma", begin = 1) +
   scale_y_continuous(position = "right") +
   scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
-  geom_path() +
+  geom_path(size = 1) +
   guides(linetype = "none", alpha = "none", colour = "none", fill = "none") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "none") +
@@ -126,8 +127,8 @@ animate(pscot2, width = 640, height = 1080, type = "cairo", res = 300, fps = 30,
         end_pause = 30)
 anim_save("pics/phase_scot2.mp4")
 
-# put two animations side-by-side and convert to h265
+# put two animations side-by-side
 file.remove("pics/phase_scot_output.mp4")
-ffmpeg_command <- "ffmpeg -i pics/phase_scot1.mp4 -i pics/phase_scot2.mp4 -filter_complex hstack pics/phase_scot_output.mp4"
+ffmpeg_command <- "ffmpeg -i pics/phase_scot1.mp4 -i pics/phase_scot2.mp4 -filter_complex hstack -vcodec libx264 -pix_fmt yuv420p pics/phase_scot_output.mp4"
 system(ffmpeg_command)
 file.remove(c("pics/phase_scot1.mp4", "pics/phase_scot2.mp4"))
