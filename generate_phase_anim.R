@@ -82,6 +82,11 @@ ffmpeg_command <- "ffmpeg -i pics/phase.mp4 -c:v libx264 -pix_fmt yuv420p pics/p
 system(ffmpeg_command)
 file.remove("pics/phase.mp4")
 
+# convert to reasonably sized gif
+file.remove("pics/phase_output.gif")
+ffmpeg_command <- "ffmpeg -t 18 -i pics/phase_output.mp4 -vf \"fps=30,scale=1080:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 pics/phase_output.gif"
+system(ffmpeg_command)
+
 
 # Scotland example
 pscot1 <- df_plot %>% 
