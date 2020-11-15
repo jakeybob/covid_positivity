@@ -127,4 +127,4 @@ write_rds(first_wave_peaks, "data/fwp.rds")
 # clean up
 rm(list = ls(all = TRUE))
 gc()
-rstudioapi::restartSession()
+# rstudioapi::restartSession()
