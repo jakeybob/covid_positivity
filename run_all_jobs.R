@@ -8,11 +8,12 @@ while(.rs.invokeRpc("get_jobs")[[get_data_job_id]]$completed == 0){
 
 generate_plots_job_id <- rstudioapi::jobRunScript("generate_plots.R")
 generate_maps_job_id <- rstudioapi::jobRunScript("generate_maps.R")
-generate_phase_anim_job_id <- rstudioapi::jobRunScript("generate_phase_anim.R")
+# generate_phase_anim_job_id <- rstudioapi::jobRunScript("generate_phase_anim.R")
 
 while(.rs.invokeRpc("get_jobs")[[generate_plots_job_id]]$completed == 0 |
-      .rs.invokeRpc("get_jobs")[[generate_maps_job_id]]$completed == 0 |
-      .rs.invokeRpc("get_jobs")[[generate_phase_anim_job_id]]$completed == 0){
+      .rs.invokeRpc("get_jobs")[[generate_maps_job_id]]$completed == 0 
+      # .rs.invokeRpc("get_jobs")[[generate_phase_anim_job_id]]$completed == 0
+      ){
   Sys.sleep(10) # check status every ten seconds
 }
 
