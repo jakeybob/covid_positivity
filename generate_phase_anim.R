@@ -71,7 +71,9 @@ p <- df_plot %>%
   transition_states(plot_date) +
   ease_aes("linear")
 
-animate(p, width = 1920, height = 1080, type = "cairo", res = 300, fps = 30, duration = 20,
+# animate(p, width = 1920, height = 1080, type = "cairo", res = 300, fps = 30, duration = 20,
+#         end_pause = 60)
+animate(p, width = 1920, height = 1080, type = "cairo", res = 300, fps = 30, duration = 30,
         end_pause = 60)
 anim_save("pics/phase.mp4")
 
@@ -88,52 +90,52 @@ ffmpeg_command <- "ffmpeg -t 18 -i pics/phase_output.mp4 -vf \"fps=30,scale=1080
 system(ffmpeg_command)
 
 
-# Scotland example
-pscot1 <- df_plot %>% 
-  filter(ca_name == "Scotland") %>% 
-  ggplot(aes(x = date, y = model_fit, colour = ca_name, fill = ca_name, group = plot_date)) +
-  scale_colour_viridis_d(option = "plasma", begin = 1) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  scale_x_date(date_breaks = "months", date_labels = "%b %Y", expand = c(0,0)) +
-  geom_path(size = 1) +
-  guides(linetype = "none", alpha = "none", colour = "none", fill = "none") +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1),
-        legend.position = "none") +
-  labs(x = "", y = "positivity", fill = "", colour = "", fill = "", 
-       title = "Scotland COVID-19 Test Positivity",
-       subtitle = "(test positivity and phase space)") +
-  transition_states(plot_date) +
-  ease_aes("linear")
-
-animate(pscot1, width = 1280, height = 1080, type = "cairo", res = 300, fps = 30, duration = 20,
-        end_pause = 30)
-anim_save("pics/phase_scot1.mp4")
-
-pscot2 <- df_plot %>% 
-  filter(ca_name == "Scotland") %>% 
-  ggplot(aes(x = model_fit, y = model_fit_diff, colour = ca_name, fill = ca_name, group = plot_date)) +
-  scale_colour_viridis_d(option = "plasma", begin = 1) +
-  scale_y_continuous(position = "right") +
-  scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
-  geom_path(size = 1) +
-  guides(linetype = "none", alpha = "none", colour = "none", fill = "none") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "none") +
-  labs(x = "positivity", y = "positivity change", fill = "", colour = "", fill = "", 
-       title = "Scotland COVID-19 Test Positivity",
-       subtitle = "(test positivity and phase space)") +
-  theme(plot.title = element_text(colour = "black"),
-        plot.subtitle = element_text(colour = "black"),
-        axis.text.x = element_text(angle = 90, hjust = 1)) +
-  transition_states(plot_date) +
-  ease_aes("linear")
-
-animate(pscot2, width = 640, height = 1080, type = "cairo", res = 300, fps = 30, duration = 20,
-        end_pause = 30)
-anim_save("pics/phase_scot2.mp4")
-
-# put two animations side-by-side
-file.remove("pics/phase_scot_output.mp4")
-ffmpeg_command <- "ffmpeg -i pics/phase_scot1.mp4 -i pics/phase_scot2.mp4 -filter_complex hstack -vcodec libx264 -pix_fmt yuv420p pics/phase_scot_output.mp4"
-system(ffmpeg_command)
-file.remove(c("pics/phase_scot1.mp4", "pics/phase_scot2.mp4"))
+# # Scotland example
+# pscot1 <- df_plot %>% 
+#   filter(ca_name == "Scotland") %>% 
+#   ggplot(aes(x = date, y = model_fit, colour = ca_name, fill = ca_name, group = plot_date)) +
+#   scale_colour_viridis_d(option = "plasma", begin = 1) +
+#   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+#   scale_x_date(date_breaks = "months", date_labels = "%b %Y", expand = c(0,0)) +
+#   geom_path(size = 1) +
+#   guides(linetype = "none", alpha = "none", colour = "none", fill = "none") +
+#   theme(axis.text.x = element_text(angle = 90, hjust = 1),
+#         legend.position = "none") +
+#   labs(x = "", y = "positivity", fill = "", colour = "", fill = "", 
+#        title = "Scotland COVID-19 Test Positivity",
+#        subtitle = "(test positivity and phase space)") +
+#   transition_states(plot_date) +
+#   ease_aes("linear")
+# 
+# animate(pscot1, width = 1280, height = 1080, type = "cairo", res = 300, fps = 30, duration = 20,
+#         end_pause = 30)
+# anim_save("pics/phase_scot1.mp4")
+# 
+# pscot2 <- df_plot %>% 
+#   filter(ca_name == "Scotland") %>% 
+#   ggplot(aes(x = model_fit, y = model_fit_diff, colour = ca_name, fill = ca_name, group = plot_date)) +
+#   scale_colour_viridis_d(option = "plasma", begin = 1) +
+#   scale_y_continuous(position = "right") +
+#   scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
+#   geom_path(size = 1) +
+#   guides(linetype = "none", alpha = "none", colour = "none", fill = "none") +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1),
+#         legend.position = "none") +
+#   labs(x = "positivity", y = "positivity change", fill = "", colour = "", fill = "", 
+#        title = "Scotland COVID-19 Test Positivity",
+#        subtitle = "(test positivity and phase space)") +
+#   theme(plot.title = element_text(colour = "black"),
+#         plot.subtitle = element_text(colour = "black"),
+#         axis.text.x = element_text(angle = 90, hjust = 1)) +
+#   transition_states(plot_date) +
+#   ease_aes("linear")
+# 
+# animate(pscot2, width = 640, height = 1080, type = "cairo", res = 300, fps = 30, duration = 20,
+#         end_pause = 30)
+# anim_save("pics/phase_scot2.mp4")
+# 
+# # put two animations side-by-side
+# file.remove("pics/phase_scot_output.mp4")
+# ffmpeg_command <- "ffmpeg -i pics/phase_scot1.mp4 -i pics/phase_scot2.mp4 -filter_complex hstack -vcodec libx264 -pix_fmt yuv420p pics/phase_scot_output.mp4"
+# system(ffmpeg_command)
+# file.remove(c("pics/phase_scot1.mp4", "pics/phase_scot2.mp4"))

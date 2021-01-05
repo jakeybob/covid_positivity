@@ -49,7 +49,7 @@ df %>%
   scale_x_date(date_breaks = "months", date_labels = "%b %Y") +
   labs(x = "", y = "", fill = "", colour = "", size = "",
        title = "Scotland COVID-19 Test Positivity",
-       subtitle = "(point size indicates number of tests, line fit is smoothed binomial)") +
+       subtitle = "(point size indicates number of tests)") +
   theme(legend.position = "right")
 ggsave("pics/plot_scot_smooth.png", dpi = 300, width = 200, height = 133, units = "mm")
 

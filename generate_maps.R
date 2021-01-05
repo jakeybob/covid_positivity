@@ -42,20 +42,20 @@ box <- st_bbox(scot_map_ca)
 box_expand <- ((box$ymax - box$ymin) - (box$xmax - box$xmin))/2
 
 #### ANIMATION ####
-# example frame
-read_rds("data/df.rds") %>% 
-  filter(date <= dmy("21/04/2020")) %>%
-  select(ca_name, date, model_fit) %>% 
-  right_join(scot_map_ca) %>% 
-  ggplot() +
-  geom_sf(mapping = aes(fill = model_fit, geometry = geometry), colour = rgb(1, 1, 1, .5), size = .15) +
-  scale_fill_viridis_c(option = "plasma", labels = scales::percent_format(accuracy = 1), limits = c(0, .35), oob = scales::squish) +
-  labs(fill = "", title = title_text,
-       subtitle = "21 / 04 / 2020") +
-  coord_sf(xlim = c(box$xmin - box_expand, box$xmax + box_expand), expand = FALSE) 
-ggsave("pics/example_frame.png", dpi = 360, width = 3, height = 3, units = "in")
+# # example frame
+# read_rds("data/df.rds") %>% 
+#   filter(date <= dmy("21/04/2020")) %>%
+#   select(ca_name, date, model_fit) %>% 
+#   right_join(scot_map_ca) %>% 
+#   ggplot() +
+#   geom_sf(mapping = aes(fill = model_fit, geometry = geometry), colour = rgb(1, 1, 1, .5), size = .15) +
+#   scale_fill_viridis_c(option = "plasma", labels = scales::percent_format(accuracy = 1), limits = c(0, .35), oob = scales::squish) +
+#   labs(fill = "", title = title_text,
+#        subtitle = "21 / 04 / 2020") +
+#   coord_sf(xlim = c(box$xmin - box_expand, box$xmax + box_expand), expand = FALSE) 
+# ggsave("pics/example_frame.png", dpi = 360, width = 3, height = 3, units = "in")
 
-# data ot be included in animation
+## data to be included in animation
 # df <- read_rds("data/df.rds") # all data
 # df <- read_rds("data/df.rds") %>% filter(date <= dmy("01/06/2020")) # first wave
 df <- read_rds("data/df.rds") %>% filter(date >= dmy("01/08/2020")) # second wave
@@ -75,7 +75,12 @@ p <- df %>%
   transition_states(date) +
   ease_aes("linear")
 
-animate(p, width = 1080, height = 1080, type = "cairo", res = 300, fps = 30, duration = 11.5, 
+animate(p, width = 1080, height = 1080, type = "cairo", res = 300, fps = 30, duration = 15, 
         start_pause = 15,
-        end_pause = 60)
-anim_save("pics/second.gif")
+        end_pause = 45)
+anim_save("pics/second_pre.gif")
+
+file.remove("pics/second.gif")
+ffmpeg_command <- "ffmpeg -t 17 -i pics/second_pre.gif -vf \"fps=30,scale=1080:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 pics/second.gif"
+system(ffmpeg_command)
+file.remove("pics/second_pre.gif")
