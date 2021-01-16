@@ -8,7 +8,7 @@ library(foreach)
 library(doParallel)
 registerDoParallel(parallel::detectCores())
 
-# use_bam <- TRUE
+use_bam <- TRUE
 if(exists("use_bam") == FALSE){use_bam <- FALSE}
 print(use_bam)
 
