@@ -8,7 +8,7 @@ library(foreach)
 library(doParallel)
 registerDoParallel(parallel::detectCores())
 
-use_bam <- TRUE
+# use_bam <- TRUE
 if(exists("use_bam") == FALSE){use_bam <- FALSE}
 print(use_bam)
 
@@ -58,43 +58,23 @@ df <- df %>%
 
 
 #### BINOMIAL SMOOTH MODEL ####
-# create df with test results expanded out to one row per test, for binomial fit
-areas_to_expand <- unique(df$ca_name)[!(unique(df$ca_name) %in% "Scotland")] # everything but Scotland to speed things up
-df_expanded <- foreach(i = 1:length(areas_to_expand), .combine = "rbind") %:%
-  foreach(j = 1:length(filter(df, ca_name == areas_to_expand[i])$date), .combine = "rbind") %dopar% {
-    
-    area <- areas_to_expand[i]
-    date_to_expand <- filter(df, ca_name == area)$date[j]
-    
-    positives <- filter(df, ca_name == area, date == date_to_expand)$daily_positive
-    negatives <- filter(df, ca_name == area, date == date_to_expand)$daily_negative
-    result <- c(rep(1, positives), rep(0, negatives))
-    
-    tibble(ca_name = area,
-           date = as_date(date_to_expand),
-           result = result)
-  }
-
-df_expanded <- df_expanded %>% bind_rows(mutate(., ca_name = "Scotland")) # add in Scotland data (ie all test results!)
-
 # fit model and extract fit values and 95% confidence intervals
 fam <- binomial()
 se_95 <- qnorm(0.025, lower.tail = FALSE)
 
-# if use_bam == TRUE will use
-model_data <- foreach(i = 1:length(unique(df_expanded$ca_name)), .combine = "rbind") %dopar% {
-  area <- unique(df_expanded$ca_name)[i]
+model_data <- foreach(i = 1:length(unique(df$ca_name)), .combine = "rbind") %dopar% {
+  area <- unique(df$ca_name)[i]
   
   if(use_bam == TRUE){
-    a <- bam(result ~ s(x, k = 10),
+    a <- bam(cbind(daily_positive, daily_negative) ~ s(x, k = 10),
              method = "REML", family = fam,
-             data = df_expanded %>% filter(ca_name == area) %>% mutate(x = as.integer(date)))
+             data = df %>% filter(ca_name == area) %>% mutate(x = as.integer(date)))
   } else{
-    a <- gam(result ~ s(x, k = 10),
+    a <- gam(cbind(daily_positive, daily_negative) ~ s(x, k = 10),
              method = "REML", family = fam,
-             data = df_expanded %>% filter(ca_name == area) %>% mutate(x = as.integer(date)))
+             data = df %>% filter(ca_name == area) %>% mutate(x = as.integer(date)))
   }
-
+  
   b <- predict.gam(a, newdata = df %>% filter(ca_name == area) %>% mutate(x = as.integer(date)), 
                    type = "link", se.fit = TRUE)
   
@@ -103,7 +83,7 @@ model_data <- foreach(i = 1:length(unique(df_expanded$ca_name)), .combine = "rbi
                           lower_95 = fam$linkinv(fit - (se_95*se.fit)),
                           ca_name = area,
                           date = filter(df, ca_name == area)$date) %>% 
-                          select(date, ca_name, model_fit, upper_95, lower_95)
+    select(date, ca_name, model_fit, upper_95, lower_95)
 }
 
 # join model data onto test data, rolling averages etc, and save
