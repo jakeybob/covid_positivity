@@ -18,6 +18,7 @@ while(.rs.invokeRpc("get_jobs")[[generate_plots_job_id]]$completed == 0 |
 }
 
 rm(list = ls())
+gc()
 
 # commit and push (note won't add any new files to repo)
 system(paste0("git commit -am  \"", Sys.Date(), " updates", "\""))
