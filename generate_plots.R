@@ -341,3 +341,7 @@ df %>%
   labs(x = "positivity", y = "positivity change", fill = "", colour = "", linetype="",
        title = "COVID-19 Test Positivity Phase Space") 
 ggsave("pics/plot_phase_selected3.png", dpi = 300, width = 297, height = 210, units = "mm")
+
+rm(list = ls(all = TRUE))
+gc()
+# rstudioapi::restartSession()

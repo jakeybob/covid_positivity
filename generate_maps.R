@@ -84,3 +84,7 @@ file.remove("pics/second.gif")
 ffmpeg_command <- "ffmpeg -t 17 -i pics/second_pre.gif -vf \"fps=30,scale=1080:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 pics/second.gif"
 system(ffmpeg_command)
 file.remove("pics/second_pre.gif")
+
+rm(list = ls(all = TRUE))
+gc()
+# rstudioapi::restartSession()

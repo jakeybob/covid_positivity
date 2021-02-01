@@ -139,3 +139,7 @@ system(ffmpeg_command)
 # ffmpeg_command <- "ffmpeg -i pics/phase_scot1.mp4 -i pics/phase_scot2.mp4 -filter_complex hstack -vcodec libx264 -pix_fmt yuv420p pics/phase_scot_output.mp4"
 # system(ffmpeg_command)
 # file.remove(c("pics/phase_scot1.mp4", "pics/phase_scot2.mp4"))
+
+rm(list = ls(all = TRUE))
+gc()
+# rstudioapi::restartSession()
