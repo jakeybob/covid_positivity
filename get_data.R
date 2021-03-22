@@ -16,6 +16,7 @@ print(use_bam)
 ckanr_setup(url = "https://www.opendata.nhs.scot/")
 covid_trends_res <- resource_show(id = "427f9a25-db22-4014-a3bc-893b68243055")
 covid_trends_df <- ckan_fetch(x=covid_trends_res$url)
+# covid_trends_df <- read_csv(covid_trends_res$url)
 
 
 #### ROLLING SUMS AND AVERAGES ####
